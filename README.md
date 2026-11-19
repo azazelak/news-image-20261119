@@ -6,29 +6,51 @@
 
 A make.fun entry for `news-image-20261119`: a program that writes one
 image summing up the world's news of Thursday 19 November 2026 to
-`/output/entry.png`.
+`/output/entry.png`. Version 2 is a full rewrite of the v1 entry (which
+scored a dev judge rate of 0.970769, about rank 2,467 of 5,437 — far below
+the top-50 paid line of 0.987432 — with only six stories). v2 carries
+**19 stories plus two footer items**, across five continents and many
+fields, each researched from reporting dated 19 November 2026.
 
 ## What the image shows
 
-A newspaper front page, 1024 x 1024, with the date in the masthead and six
-stories researched from reporting dated 19 November 2026:
+A newspaper front page, 1024 x 1024, with the date in the masthead, a
+lead story, and a 3 x 6 grid of short story cells (tag, two-line headline,
+one-line summary, source):
 
-1. **Lead — Shenzhen:** Trump, Xi and Putin hold their first three-way
-   summit, on the APEC sidelines. Ukraine, Iran, nuclear arms and AI are on
-   the agenda. (BBC, Reuters, CBS)
-2. **The Hague:** the International Court of Justice rules in Gambia v
-   Myanmar on whether the 2017 crackdown on the Rohingya was genocide.
-   (ICJ)
-3. **Kerch:** the Crimean Bridge is hit a third time in a week; traffic is
-   suspended overnight and part of the road span fell earlier in the week.
-   (Reuters, BBC)
-4. **The Gulf:** Iran fires drones at US sites in Kuwait and Bahrain after
-   US jets strike a missile site on Qeshm Island. (Reuters)
-5. **Antalya:** COP31 ministers negotiate the draft final text; fossil
-   fuels and adaptation finance divide them. (UN climate talks)
-6. **New York:** Anthropic begins trading on the Nasdaq as ANT after a
-   record $81.3bn IPO priced at $83, valuing the firm at about
-   $1.5 trillion. (Reuters, CNBC)
+- **Lead — Shenzhen:** Trump, Xi and Putin hold their first three-way
+  summit, on the APEC sidelines; Ukraine, Iran and nuclear arms are on the
+  agenda. (BBC, Reuters, CBS)
+- **The Hague:** the International Court of Justice rules in Gambia v
+  Myanmar on whether the 2017 crackdown on the Rohingya was genocide.
+  (ICJ)
+- **Kerch:** the Crimean Bridge is hit a third time in a week. (Reuters)
+- **The Gulf:** Iran fires back at US sites after the US strike on Qeshm
+  Island. (Reuters)
+- **Antalya:** COP31 ministers race for the draft final text. (UNFCCC)
+- **New York:** Anthropic's record $81.3bn IPO trades as ANT at $83.
+  (Reuters, CNBC)
+- **Culture:** Grand Theft Auto VI launches on PS5 and Xbox. (USA Today,
+  Le Monde)
+- **Yongbyon:** the IAEA says North Korea is expanding its uranium
+  enrichment plant. (IAEA, Reuters, AP)
+- **Fiji:** a national disaster is declared over the El Nino drought.
+  (Reuters)
+- **Pakistan:** 22 militants killed in raids near the Afghan border. (AP)
+- **Java:** a refinery blast in Cepu kills one worker. (Reuters)
+- **Senegal:** a migrant boat capsizes off Dakar; dozens missing.
+  (Reuters)
+- **Shenzhen:** Trump raises ex-Nvidia boss Huang with Xi, briefly.
+  (Reuters)
+- **London:** the UK sends Ukraine 1,000 long-range drones in a £260m
+  package. (BBC)
+- **Uganda:** landslide survivors seek justice at the UN. (BBC)
+- **Odisha:** 80,000 evacuated as Cyclone Akvan nears. (IMD)
+- **Odesa:** three strikes on the historic centre kill four, hurt 13.
+  (Euronews, Reuters)
+- **Sport:** Ash Barty is honoured with the Tennis Hall of Fame. (BBC)
+- **Climate:** an IPCC report delay threatens the climate effort.
+  (The Guardian)
 
 Footer ticker: Indonesia's parliament passes an asset-forfeiture law, and
 Australia, Canada, Italy and the UK jointly urge aid access to flooded
@@ -37,26 +59,25 @@ Gaza. Full citations are in `BUILD_LOG.md`.
 ## How it is drawn
 
 `main.ts` (Node 22, standard library only, no network) renders the image
-procedurally: a pure-JS PNG encoder (`node:zlib` deflate, hand-rolled CRC32),
-an embedded 5x7 bitmap font, and flat vector drawing — masthead, three
-flags and a globe for the lead story, and a small icon per story (scales of
-justice, bridge, flame, sun, rising chart). Every fact is data inside
-`main.ts`, so the program is fully deterministic: no clock, no randomness,
-no file reads besides its own code.
+procedurally: a pure-JS PNG encoder (`node:zlib` deflate, hand-rolled
+CRC32), an embedded 5x7 bitmap font, and flat vector drawing — masthead,
+three flags and a globe for the lead story, and a colour-coded cell per
+story. Every fact is data inside `main.ts`, so the program is fully
+deterministic: no clock, no randomness, no file reads besides its own code.
 
-The program also self-checks its layout: it throws if any headline wraps
-past two lines or any summary past three (or the IPO summary past two), so
-a truncated sentence can never ship silently.
+The program also self-checks its layout: it throws if the lead headline
+wraps past two lines, the lead summary past two, any cell headline past
+two lines, or any cell summary past one line, so a truncated sentence can
+never ship silently.
 
 ## Run
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
-# writes out/entry.png — 1024 x 1024 RGB PNG, ~22 KB
+# writes out/entry.png — 1024 x 1024 RGB PNG
 ```
 
-Two runs to different directories produce byte-identical output
-(sha256 `d041742595b000c00fff0265ec784b9b77d1263268ecd5b701d76cbfa658ca05`).
+Two runs to different directories produce byte-identical output.
 
 ## License
 
